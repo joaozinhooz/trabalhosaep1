@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Edu Control</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Configurações gerais */
+        body, html {
+            height: 100%;
+            margin: 0;
+            background-image: url(assets/background.png);
+            position: relative; /* Necessário para o posicionamento absoluto da imagem */
+            overflow-y: scroll; /* Permite a rolagem vertical */
+        }
+
+        /* Estilo da barra de navegação */
+        .navbar {
+            background-color: transparent;
+            position: absolute;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+        }
+
+        .navbar-nav .nav-link {
+            color: #ffffff !important;
+            margin-right: 20px;
+            margin-top: 20px;
+        }
+
+        .navbar-brand {
+            margin-top: 20px;
+            margin-right: 100px;
+        }
+
+        /* Seção hero (principal) */
+        .hero {
+            background: linear-gradient(to right, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('https://www.example.com/background-image.jpg'); /* Coloque aqui a URL da imagem */
+            background-size: cover;
+            background-position: center;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            text-align: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* Estilo das animações */
+        @keyframes fadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeOut {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+        }
+
+        /* Aplicando animações para o título e o parágrafo */
+        .hero h1 {
+            font-size: 4rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            z-index: 2;
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: 240px;
+            text-align: right;
+            z-index: 2;
+            animation: fadeIn 2s ease-out;
+        }
+
+        .btn-light {
+            padding: 0.75rem 1.5rem;
+            font-weight: bold;
+            animation: fadeIn 2.5s ease-out;
+        }
+
+        /* Alinhamento no canto superior direito do logo da empresa */
+        .navbar-brand {
+            position: absolute;
+            right: 20px;
+            color: #ffffff !important;
+            font-weight: bold;
+        }
+
+        /* Posicionamento da imagem no canto inferior direito */
+        .bottom-right {
+            position: absolute;
+            bottom: 0px; /* Ajuste a distância do fundo */
+            right: 0px; /* Ajuste a distância da direita */
+            z-index: 1; /* Garante que a imagem fique abaixo de outros elementos */
+        }
+
+        /* Estilo para a barra de rolagem moderna */
+        ::-webkit-scrollbar {
+            width: 0px; /* Largura da scrollbar */
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent; /* Cor de fundo da pista da scrollbar */
+            border-radius: 10px; /* Bordas arredondadas */
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #f8f9fa; /* Cor do "polegar" da scrollbar */
+            border-radius: 10px; /* Bordas arredondadas */
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #f8f9fa; /* Cor do "polegar" ao passar o mouse */
+        }
+
+        /* Nova seção de informações */
+        .info-section {
+            background-color: #f8f9fa; /* Cor de fundo suave */
+            padding: 60px 20px; /* Espaçamento interno */
+            text-align: center;
+            position: relative;
+            z-index: 0;
+        }
+
+        .info-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            animation: fadeIn 1.5s ease-out;
+        }
+
+        .info-section p {
+            font-size: 1.125rem;
+            max-width: 800px;
+            margin: 0 auto;
+            animation: fadeIn 2s ease-out;
+        }
+
+        /* Ajustes de estilo para dispositivos móveis */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+                margin-left: 20px; /* Diminua a margem esquerda para dispositivos móveis */
+            }
+
+            .btn-light, .btn-outline-light {
+                font-size: 0.875rem;
+                padding: 0.5rem 1rem;
+            }
+
+            /* Reduzir o tamanho da imagem em dispositivos móveis, se necessário */
+            .bottom-right img {
+                width: 480px; /* Ajuste o tamanho da imagem em dispositivos móveis, 6 vezes menor */
+            }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">HOME</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">ABOUT</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">SERVICE</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">HELP</a>
+                    </li>
+                </ul>
+            </div>
+            <a class="navbar-brand" href="#">Edu Control.</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="container">
+            <h1>Simplifique o gerenciamento da sua turma e potencialize a educação.</h1>
+            <p>EduControl é a solução ideal para professores gerenciarem turmas de forma eficiente e prática, transformando a experiência de ensino.</p>
+            <div>
+                <a href="#infoSection" class="btn btn-light me-2">LEARN MORE</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Imagem no canto inferior direito -->
+    <div class="bottom-right">
+        <img src="assets/profd.png" alt="Descrição da Imagem" width="600"> <!-- Altere a URL da imagem conforme necessário -->
+    </div>
+
+    <!-- Nova seção de informações -->
+    <div class="info-section" id="infoSection">
+        <h2>Mais Sobre o Edu Control</h2>
+        <p>O Edu Control é uma ferramenta inovadora que auxilia educadores no gerenciamento eficiente de suas turmas. Com recursos intuitivos, é possível acompanhar o desempenho dos alunos, organizar atividades e muito mais. A nossa missão é transformar a educação através da tecnologia.</p>
+        <p>Explore nossas funcionalidades e descubra como podemos ajudar você a se tornar um professor ainda mais eficaz e engajado!</p>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
