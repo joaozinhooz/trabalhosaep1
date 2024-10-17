@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edu Control - Navbar and Background</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Configurações gerais */
+        body, html {
+            height: 100%;
+            margin: 0;
+            background-image: url(assets/background.png); /* URL da imagem de fundo */
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        /* Estilo da barra de navegação */
+        .navbar {
+            background-color: transparent;
+            position: absolute;
+            top: 0;
+            width: 100%;
+            z-index: 100;
+        }
+
+        .navbar-nav .nav-link {
+            color: #ffffff !important;
+            margin-right: 20px;
+            margin-top: 20px;
+        }
+
+        .navbar-brand {
+            color: #ffffff !important;
+            font-weight: bold;
+            margin-top: 20px;
+            margin-right: 100px;
+        }
+
+        /* Alinhamento da marca no canto superior direito */
+        .navbar-brand {
+            position: absolute;
+            right: 20px;
+        }
+
+        /* Estilo do formulário de registro */
+        .register-container {
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Alinha o cartão ao início */
+            height: calc(100vh - 60px); /* Ajusta a altura para não sobrepor a navbar */
+        }
+
+        .card {
+            margin-top: 80px; /* Adiciona espaço acima do card */
+            margin-right: 330px;
+            width: 800px; /* Aumenta a largura do card */
+            color: #e9ecef;
+            background-color: rgba(255, 255, 255, 0); /* Torna o cartão totalmente transparente */
+            backdrop-filter: blur(10px); /* Adiciona um efeito de desfoque ao fundo */
+            border: none; /* Remove a borda do cartão */
+        }
+
+        .form-control {
+            background-color: rgb(255, 255, 255, 0); /* Cor de fundo dos inputs com transparência */
+            color: white; /* Define a cor do texto para branco */
+            border: 1px solid #ced4da; /* Borda padrão dos inputs */
+            transition: background-color 0.3s, border-color 0.3s; /* Animação para mudanças de cor */
+        }
+
+        .form-control:focus {
+            background-color: rgba(233, 236, 239, 0.0); /* Cor de fundo quando o input está em foco */
+            border-color: #0d0d0e; /* Cor da borda quando o input está em foco */
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* Sombra quando em foco */
+            outline: none; /* Remove contorno padrão do foco */
+            color: #ced4da;
+        }
+
+        /* Efeito de transição para o label do input */
+        .form-label {
+            transition: transform 0.3s ease, color 0.3s ease; /* Animação para rótulo */
+            color: #ced4da;
+        }
+
+        .form-control:focus + .form-label,
+        .form-control:not(:placeholder-shown) + .form-label {
+            transform: translateY(-20px); /* Move o label para cima */
+            color: #80bdff; /* Cor do label em foco */
+        }
+
+        .btn-primary {
+            background-color: #e9ecef;
+            color: #0d0d0e;
+            font-weight: bold;
+            border-color: #e9ecef;
+        }
+
+        .btn-primary:hover {
+            background-color: #8f8f8f;
+            color: #0d0d0e;
+            border-color: #8f8f8f;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="home.html">Inicio</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="cadastrarturma.html">Cadastrar Turmas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="turmas.html">Minhas Turmas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="cadastraratividades.html">Cadastrar Atividades</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="atividades.html">Minhas Atividades</a>
+                </li>
+                </ul>
+            </div>
+            <a class="navbar-brand" href="#">Edu Control.</a>
+        </div>
+    </nav>
+
+    <!-- Seção de registro de turma -->
+    <div class="register-container">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Cadastrar Turma</h5>
+                <form>
+                    <div class="mb-3">
+                        <label for="turmaNome" class="form-label">Nome da Turma</label>
+                        <input type="text" class="form-control" id="turmaNome" placeholder=" " required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="turmaDescricao" class="form-label">Descrição</label>
+                        <textarea class="form-control" id="turmaDescricao" rows="3" placeholder=" " required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="professor" class="form-label">Professor Responsável</label>
+                        <input type="text" class="form-control" id="professor" placeholder=" " required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="numeroAlunos" class="form-label">Número de Alunos</label>
+                        <input type="number" class="form-control" id="numeroAlunos" placeholder=" " required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Cadastrar</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
