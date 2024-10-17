@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edu Control - Navbar</title>
+    <title>Edu Control - Minhas Turmas</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- Adicionando Font Awesome -->
     <style>
-        /* Configurações gerais */
         body, html {
             height: 100%;
             margin: 0;
-            background-image: url('assets/background.png'); /* URL da imagem de fundo */
+            background-image: url('assets/background.png');
             background-size: cover;
             background-position: center;
-            position: relative; /* Necessário para o posicionamento da imagem */
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Estilo da barra de navegação */
         .navbar {
             background-color: transparent;
             position: absolute;
@@ -32,26 +32,47 @@
         }
 
         .navbar-brand {
-            margin-top: 20px;
-            margin-right: 100px;
-        }
-
-        .navbar-brand {
             position: absolute;
             right: 20px;
             color: #ffffff !important;
             font-weight: bold;
         }
 
-        /* Posicionamento da imagem no canto inferior direito */
-        .bottom-right {
-            position: absolute;
-            bottom: 0px; /* Ajuste a distância do fundo */
-            right: 0px; /* Ajuste a distância da direita */
-            z-index: 1; /* Garante que a imagem fique abaixo de outros elementos */
+        .content-container {
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            flex-direction: column;
+            margin-top: 100px;
+            padding-left: 50px;
         }
 
+        h2 {
+            text-align: left;
+            color: white;
+            margin-bottom: 40px;
+            margin-left: 80px;
+        }
 
+        .list-group {
+            margin-left: 80px;
+            width: 80%;
+        }
+
+        .list-group-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 10px; /* Espaçamento entre os itens */
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .delete-icon {
+            cursor: pointer;
+            color: #ff0000; /* Cor vermelha para o ícone */
+        }
     </style>
 </head>
 <body>
@@ -83,6 +104,50 @@
         </div>
     </nav>
 
+    <div class="content-container">
+        <h2>Minhas Turmas</h2>
+        <ul id="turma-list" class="list-group">
+            <!-- As turmas serão exibidas aqui -->
+        </ul>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Obtém o array de turmas do localStorage
+        const turmas = JSON.parse(localStorage.getItem("turmas")) || [];
+
+        // Seleciona o container onde as turmas serão exibidas
+        const turmaList = document.getElementById("turma-list");
+
+        // Função para criar a lista de cada turma
+        function criarItemLista(turma, index) {
+            return `
+                <li class="list-group-item">
+                    <div>
+                        <strong>${turma.nome}</strong><br>
+                        <span><strong>Descrição:</strong> ${turma.descricao}</span><br>
+                        <span><strong>Professor:</strong> ${turma.professor}</span><br>
+                        <span><strong>Número de Alunos:</strong> ${turma.alunos}</span>
+                    </div>
+                    <i class="fas fa-trash delete-icon" onclick="deletarTurma(${index})"></i> <!-- Ícone de lixeira -->
+                </li>
+            `;
+        }
+
+        // Função para deletar uma turma
+        function deletarTurma(index) {
+            if (confirm("Tem certeza que deseja excluir esta turma?")) {
+                turmas.splice(index, 1); // Remove a turma do array
+                localStorage.setItem("turmas", JSON.stringify(turmas)); // Atualiza o localStorage
+                window.location.reload(); // Recarrega a página para atualizar a lista
+            }
+        }
+
+        // Percorre o array de turmas e adiciona cada uma ao container
+        turmas.forEach((turma, index) => {
+            turmaList.innerHTML += criarItemLista(turma, index);
+        });
+    </script>
 </body>
 </html>
