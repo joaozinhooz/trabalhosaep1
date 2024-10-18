@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Edu Control - Navbar</title>
+    <title>Edu Control - Minhas Atividades</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         /* Configurações gerais */
@@ -11,13 +11,14 @@
             height: 100%;
             margin: 0;
             background-image: url('assets/background.png'); /* URL da imagem de fundo */
-            background-size: cover;
+            background-size: cover; /* Garante que a imagem cubra toda a tela */
             background-position: center;
-            position: relative; /* Necessário para o posicionamento da imagem */
+            background-repeat: no-repeat; /* Evita que a imagem se repita */
+            position: relative;
         }
 
         /* Estilo da barra de navegação */
-        .navbar {
+        navbar {
             background-color: transparent;
             position: absolute;
             top: 0;
@@ -32,6 +33,8 @@
         }
 
         .navbar-brand {
+            color: #ffffff !important;
+            font-weight: bold;
             margin-top: 20px;
             margin-right: 100px;
         }
@@ -39,19 +42,36 @@
         .navbar-brand {
             position: absolute;
             right: 20px;
-            color: #ffffff !important;
-            font-weight: bold;
         }
 
-        /* Posicionamento da imagem no canto inferior direito */
-        .bottom-right {
-            position: absolute;
-            bottom: 0px; /* Ajuste a distância do fundo */
-            right: 0px; /* Ajuste a distância da direita */
-            z-index: 1; /* Garante que a imagem fique abaixo de outros elementos */
+        /* Estilo da tabela de atividades */
+        .atividades-container {
+            margin-top: 100px; /* Margem para compensar a altura da navbar */
+            color: #ffffff;
+            padding: 20px;
         }
 
+        .table {
+            color: #ffffff;
+        }
 
+        ::-webkit-scrollbar {
+            width: 0px; /* Largura da scrollbar */
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent; /* Cor de fundo da pista da scrollbar */
+            border-radius: 10px; /* Bordas arredondadas */
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #f8f9fa; /* Cor do "polegar" da scrollbar */
+            border-radius: 10px; /* Bordas arredondadas */
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #f8f9fa; /* Cor do "polegar" ao passar o mouse */
+        }
     </style>
 </head>
 <body>
@@ -83,7 +103,71 @@
         </div>
     </nav>
 
+    <div class="container atividades-container">
+        <h3>Minhas Atividades</h3>
+        <table class="table table-bordered table-hover">
+            <thead>
+                <tr>
+                    <th>Turma</th>
+                    <th>Nome da Atividade</th>
+                    <th>Descrição</th>
+                    <th>Data de Entrega</th>
+                </tr>
+            </thead>
+            <tbody id="atividadesTableBody">
+                <!-- As atividades serão inseridas aqui dinamicamente -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        // Função para carregar as atividades do localStorage e exibi-las na tabela
+        function carregarAtividades() {
+            const atividades = JSON.parse(localStorage.getItem("atividades")) || [];
+            const atividadesTableBody = document.getElementById("atividadesTableBody");
+
+            // Limpar a tabela antes de carregar os dados
+            atividadesTableBody.innerHTML = "";
+
+            // Verificar se há atividades cadastradas
+            if (atividades.length === 0) {
+                const row = document.createElement("tr");
+                const cell = document.createElement("td");
+                cell.colSpan = 4;
+                cell.textContent = "Nenhuma atividade cadastrada.";
+                row.appendChild(cell);
+                atividadesTableBody.appendChild(row);
+                return;
+            }
+
+            // Preencher a tabela com as atividades
+            atividades.forEach(atividade => {
+                const row = document.createElement("tr");
+
+                const turmaCell = document.createElement("td");
+                turmaCell.textContent = atividade.turma;
+                row.appendChild(turmaCell);
+
+                const nomeCell = document.createElement("td");
+                nomeCell.textContent = atividade.nome;
+                row.appendChild(nomeCell);
+
+                const descricaoCell = document.createElement("td");
+                descricaoCell.textContent = atividade.descricao;
+                row.appendChild(descricaoCell);
+
+                const dataEntregaCell = document.createElement("td");
+                dataEntregaCell.textContent = atividade.dataEntrega;
+                row.appendChild(dataEntregaCell);
+
+                atividadesTableBody.appendChild(row);
+            });
+        }
+
+        // Carregar atividades ao carregar a página
+        window.onload = carregarAtividades;
+    </script>
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-s
