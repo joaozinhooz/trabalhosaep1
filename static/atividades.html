@@ -123,49 +123,105 @@
         </table>
     </div>
 
+    <div class="container">
+        <h3>Adicionar Nova Atividade</h3>
+        <form id="atividadeForm">
+            <div class="mb-3">
+                <label for="turma" class="form-label">Turma</label>
+                <input type="text" class="form-control" id="turma" required>
+            </div>
+            <div class="mb-3">
+                <label for="nome" class="form-label">Nome da Atividade</label>
+                <input type="text" class="form-control" id="nome" required>
+            </div>
+            <div class="mb-3">
+                <label for="descricao" class="form-label">Descrição</label>
+                <input type="text" class="form-control" id="descricao" required>
+            </div>
+            <div class="mb-3">
+                <label for="dataEntrega" class="form-label">Data de Entrega</label>
+                <input type="date" class="form-control" id="dataEntrega" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Adicionar Atividade</button>
+        </form>
+    </div>
+
     <script>
-        // Função para carregar as atividades do localStorage e exibi-las na tabela
+        // Função para carregar as atividades do banco de dados e exibi-las na tabela
         function carregarAtividades() {
-            const atividades = JSON.parse(localStorage.getItem("atividades")) || [];
-            const atividadesTableBody = document.getElementById("atividadesTableBody");
+            fetch('/atividades')
+            .then(response => response.json())
+            .then(atividades => {
+                const atividadesTableBody = document.getElementById("atividadesTableBody");
 
-            // Limpar a tabela antes de carregar os dados
-            atividadesTableBody.innerHTML = "";
+                // Limpar a tabela antes de carregar os dados
+                atividadesTableBody.innerHTML = "";
 
-            // Verificar se há atividades cadastradas
-            if (atividades.length === 0) {
-                const row = document.createElement("tr");
-                const cell = document.createElement("td");
-                cell.colSpan = 4;
-                cell.textContent = "Nenhuma atividade cadastrada.";
-                row.appendChild(cell);
-                atividadesTableBody.appendChild(row);
-                return;
-            }
+                // Verificar se há atividades cadastradas
+                if (atividades.length === 0) {
+                    const row = document.createElement("tr");
+                    const cell = document.createElement("td");
+                    cell.colSpan = 4;
+                    cell.textContent = "Nenhuma atividade cadastrada.";
+                    row.appendChild(cell);
+                    atividadesTableBody.appendChild(row);
+                    return;
+                }
 
-            // Preencher a tabela com as atividades
-            atividades.forEach(atividade => {
-                const row = document.createElement("tr");
+                // Preencher a tabela com as atividades
+                atividades.forEach(atividade => {
+                    const row = document.createElement("tr");
 
-                const turmaCell = document.createElement("td");
-                turmaCell.textContent = atividade.turma;
-                row.appendChild(turmaCell);
+                    const turmaCell = document.createElement("td");
+                    turmaCell.textContent = atividade.turma;
+                    row.appendChild(turmaCell);
 
-                const nomeCell = document.createElement("td");
-                nomeCell.textContent = atividade.nome;
-                row.appendChild(nomeCell);
+                    const nomeCell = document.createElement("td");
+                    nomeCell.textContent = atividade.nome;
+                    row.appendChild(nomeCell);
 
-                const descricaoCell = document.createElement("td");
-                descricaoCell.textContent = atividade.descricao;
-                row.appendChild(descricaoCell);
+                    const descricaoCell = document.createElement("td");
+                    descricaoCell.textContent = atividade.descricao;
+                    row.appendChild(descricaoCell);
 
-                const dataEntregaCell = document.createElement("td");
-                dataEntregaCell.textContent = atividade.dataEntrega;
-                row.appendChild(dataEntregaCell);
+                    const dataEntregaCell = document.createElement("td");
+                    dataEntregaCell.textContent = atividade.dataEntrega;
+                    row.appendChild(dataEntregaCell);
 
-                atividadesTableBody.appendChild(row);
+                    atividadesTableBody.appendChild(row);
+                });
             });
         }
+
+        // Função para adicionar uma nova atividade ao banco de dados
+        function adicionarAtividade(atividade) {
+            fetch('/atividades', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(atividade)
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message);
+                carregarAtividades();  // Atualiza a lista de atividades
+            });
+        }
+
+        // Manipulador de envio do formulário para adicionar uma nova atividade
+        document.getElementById("atividadeForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            
+            const novaAtividade = {
+                turma: document.getElementById("turma").value,
+                nome: document.getElementById("nome").value,
+                descricao: document.getElementById("descricao").value,
+                dataEntrega: document.getElementById("dataEntrega").value
+            };
+
+            adicionarAtividade(novaAtividade);
+        });
 
         // Carregar atividades ao carregar a página
         window.onload = carregarAtividades;
