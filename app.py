@@ -44,20 +44,42 @@ def login():
 def dashboard():
     return send_from_directory('static', 'cadastrarturma.html')
 
-# Rota para atividades
-@app.route('/atividades')
-def atividades():
-    return send_from_directory('static', 'turma.html')
-
 # Rota para turmas
-@app.route('/turmas')
-def turmas():
-    return send_from_directory('static', 'cadastraratividades.html')
+@app.route('/turmas', methods=['GET'])
+def get_turmas():
+    turmas = Turma.query.all()
+    turmas_lista = [
+        {
+            'id': turma.id,
+            'nome': turma.nome,
+            'descricao': turma.descricao,
+            'professor': turma.professor,
+            'alunos': turma.alunos
+        } for turma in turmas
+    ]
+    return jsonify(turmas_lista)
 
-# Rota para cadastrar atividades
-@app.route('/cadastrar')
-def cadastrar():
-    return send_from_directory('static', 'atividades.html')
+# Rota para adicionar uma nova turma
+@app.route('/turmas', methods=['POST'])
+def add_turma():
+    data = request.get_json()
+    nova_turma = Turma(
+        nome=data['nome'],
+        descricao=data['descricao'],
+        professor=data['professor'],
+        alunos=data['alunos']
+    )
+    db.session.add(nova_turma)
+    db.session.commit()
+    return jsonify({"message": "Turma adicionada com sucesso!"}), 201
+
+# Rota para deletar uma turma
+@app.route('/turmas/<int:id>', methods=['DELETE'])
+def delete_turma(id):
+    turma = Turma.query.get_or_404(id)
+    db.session.delete(turma)
+    db.session.commit()
+    return jsonify({"message": "Turma excluída com sucesso!"})
 
 # Rota para obter todas as atividades
 @app.route('/atividades', methods=['GET'])
@@ -95,43 +117,6 @@ def delete_atividade(id):
     db.session.delete(atividade)
     db.session.commit()
     return jsonify({"message": "Atividade excluída com sucesso!"})
-
-# Rota para obter todas as turmas
-@app.route('/turmas', methods=['GET'])
-def get_turmas():
-    turmas = Turma.query.all()
-    turmas_lista = [
-        {
-            'id': turma.id,
-            'nome': turma.nome,
-            'descricao': turma.descricao,
-            'professor': turma.professor,
-            'alunos': turma.alunos
-        } for turma in turmas
-    ]
-    return jsonify(turmas_lista)
-
-# Rota para adicionar uma nova turma
-@app.route('/turmas', methods=['POST'])
-def add_turma():
-    data = request.get_json()
-    nova_turma = Turma(
-        nome=data['nome'],
-        descricao=data['descricao'],
-        professor=data['professor'],
-        alunos=data['alunos']
-    )
-    db.session.add(nova_turma)
-    db.session.commit()
-    return jsonify({"message": "Turma adicionada com sucesso!"}), 201
-
-# Rota para deletar uma turma
-@app.route('/turmas/<int:id>', methods=['DELETE'])
-def delete_turma(id):
-    turma = Turma.query.get_or_404(id)
-    db.session.delete(turma)
-    db.session.commit()
-    return jsonify({"message": "Turma excluída com sucesso!"})
 
 # Iniciar o servidor Flask
 if __name__ == '__main__':

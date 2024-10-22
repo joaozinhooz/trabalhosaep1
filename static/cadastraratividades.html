@@ -5,11 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edu Control - Cadastro de Atividades</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-
     <link rel="shortcut icon" href="assets/logoec.png" type="image/x-icon">
-
-    <link rel="stylesheet" href="">
-
     <style>
         body, html {
             height: 100%;
@@ -19,7 +15,6 @@
             background-position: center;
             position: relative;
         }
-
         .navbar {
             background-color: transparent;
             position: absolute;
@@ -27,13 +22,11 @@
             width: 100%;
             z-index: 100;
         }
-
         .navbar-nav .nav-link {
             color: #ffffff !important;
             margin-right: 20px;
             margin-top: 20px;
         }
-
         .navbar-brand {
             margin-top: 20px;
             margin-right: 100px;
@@ -42,14 +35,12 @@
             color: #ffffff !important;
             font-weight: bold;
         }
-
         .register-container {
             display: flex;
             justify-content: center;
             align-items: flex-start;
             height: calc(100vh - 60px);
         }
-
         .card {
             margin-top: 80px;
             margin-right: 330px;
@@ -59,14 +50,12 @@
             backdrop-filter: blur(10px);
             border: none;
         }
-
         .form-control {
             background-color: rgb(255, 255, 255, 0);
             color: white;
             border: 1px solid #ced4da;
             transition: background-color 0.3s, border-color 0.3s;
         }
-
         .form-control:focus {
             background-color: rgba(233, 236, 239, 0.0);
             border-color: #0d0d0e;
@@ -74,36 +63,29 @@
             outline: none;
             color: #ced4da;
         }
-
         .form-label {
             transition: transform 0.3s ease, color 0.3s ease;
             color: #ced4da;
         }
-
         .form-control:focus + .form-label,
         .form-control:not(:placeholder-shown) + .form-label {
             transform: translateY(-20px);
             color: #80bdff;
         }
-
         .btn-primary {
             background-color: #e9ecef;
             color: #0d0d0e;
             font-weight: bold;
             border-color: #e9ecef;
         }
-
         .btn-primary:hover {
             background-color: #8f8f8f;
             color: #0d0d0e;
             border-color: #8f8f8f;
         }
-
-        /* Definindo a cor preta para as opções do select */
         select.form-control {
             color: rgb(255, 255, 255); /* Cor preta para o texto das opções */
         }
-
         option {
             color: black; /* Garantia de que todas as opções tenham a cor preta */
         }
@@ -147,7 +129,7 @@
                     <div class="mb-3">
                         <label for="turmaSelect" class="form-label">Selecione a Turma</label>
                         <select class="form-control" id="turmaSelect" required></select>
-                    </div>
+                    </div>                    
                     <div class="mb-3">
                         <label for="atividadeNome" class="form-label">Nome da Atividade</label>
                         <input type="text" class="form-control" id="atividadeNome" placeholder=" " required>
@@ -169,18 +151,41 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        // Carregar turmas cadastradas no localStorage e adicionar ao select
-        function carregarTurmas() {
-            const turmas = JSON.parse(localStorage.getItem("turmas")) || [];
+        // Carregar turmas cadastradas na API e adicionar ao select
+// Carregar turmas cadastradas na API e adicionar ao select
+function carregarTurmas() {
+    fetch('/turmas')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(turmas => {
             const turmaSelect = document.getElementById("turmaSelect");
+            turmaSelect.innerHTML = ""; // Limpa as opções existentes
 
-            turmas.forEach(turma => {
-                const option = document.createElement("option");
-                option.value = turma.nome;
-                option.text = turma.nome;
-                turmaSelect.appendChild(option);
-            });
-        }
+            // Verifica se há turmas retornadas
+            if (turmas.length === 0) {
+                console.log("Nenhuma turma encontrada.");
+            } else {
+                turmas.forEach(turma => {
+                    const option = document.createElement("option");
+                    option.value = turma.id; // Você pode usar o ID se necessário
+                    option.text = turma.nome; // O texto exibido será o nome da turma
+                    turmaSelect.appendChild(option);
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Erro ao carregar as turmas.');
+        });
+}
+
+// Carregar turmas ao carregar a página
+window.onload = carregarTurmas;
+
 
         // Função para salvar a atividade
         document.getElementById("cadastroAtividadeForm").addEventListener("submit", function(event) {
@@ -198,15 +203,26 @@
                 dataEntrega: dataEntrega
             };
 
-            let atividades = JSON.parse(localStorage.getItem("atividades")) || [];
-            atividades.push(atividade);
-            localStorage.setItem("atividades", JSON.stringify(atividades));
-
-            window.location.href = "atividades.html";
+            // Enviando os dados para a API
+            fetch('/atividades', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(atividade),
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert(data.message); // Exibe a mensagem retornada pela API
+                window.location.href = "atividades.html"; // Redireciona após o sucesso
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                alert('Erro ao cadastrar atividade.');
+            });
         });
 
-        // Carregar turmas ao carregar a página
-        window.onload = carregarTurmas;
+
     </script>
 </body>
 </html>

@@ -201,26 +201,43 @@
 
         // Função para salvar a turma
         document.getElementById("cadastroTurmaForm").addEventListener("submit", function(event) {
-            event.preventDefault();
+    event.preventDefault();
 
-            const turmaNome = document.getElementById("turmaNome").value;
-            const turmaDescricao = document.getElementById("turmaDescricao").value;
-            const professor = document.getElementById("professor").value;
-            const numeroAlunos = document.getElementById("numeroAlunos").value;
+    const turmaNome = document.getElementById("turmaNome").value;
+    const turmaDescricao = document.getElementById("turmaDescricao").value;
+    const professor = document.getElementById("professor").value;
+    const numeroAlunos = document.getElementById("numeroAlunos").value;
 
-            const turma = {
-                nome: turmaNome,
-                descricao: turmaDescricao,
-                professor: professor,
-                alunos: numeroAlunos
-            };
+    const turma = {
+        nome: turmaNome,
+        descricao: turmaDescricao,
+        professor: professor,
+        alunos: numeroAlunos
+    };
 
-            let turmas = JSON.parse(localStorage.getItem("turmas")) || [];
-            turmas.push(turma);
-            localStorage.setItem("turmas", JSON.stringify(turmas));
+    fetch('/turmas', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(turma)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Erro ao cadastrar turma');
+        }
+        return response.json();
+    })
+    .then(data => {
+        alert(data.message);  // Exibir mensagem de sucesso
+        window.location.href = "turmas.html";  // Redirecionar após cadastro
+    })
+    .catch(error => {
+        console.error('Erro:', error);
+        alert('Erro ao cadastrar turma');
+    });
+});
 
-            window.location.href = "turmas.html";
-        });
 
         // Verifica o limite assim que a página é carregada
         verificarLimiteTurmas();

@@ -123,10 +123,11 @@
         function carregarTurmas() {
             fetch('/turmas')
                 .then(response => response.json())
-                .then(data => {
+                .then(turmas => {
                     const turmaList = document.getElementById('turma-list');
                     turmaList.innerHTML = ''; // Limpa a lista antes de adicionar
-                    data.forEach(turma => {
+    
+                    turmas.forEach((turma) => {
                         turmaList.innerHTML += `
                             <li class="list-group-item">
                                 <div>
@@ -139,27 +140,32 @@
                             </li>`;
                     });
                 })
-                .catch(error => console.error('Erro ao carregar turmas:', error));
+                .catch(error => {
+                    console.error('Erro ao carregar turmas:', error);
+                });
         }
-
+    
         // Função para deletar uma turma
         function deletarTurma(id) {
             if (confirm('Tem certeza que deseja excluir esta turma?')) {
-                fetch(`/turmas/${id}`, { method: 'DELETE' })
-                    .then(response => {
-                        if (response.ok) {
-                            alert('Turma excluída com sucesso!');
-                            carregarTurmas(); // Atualiza a lista de turmas
-                        } else {
-                            alert('Erro ao excluir a turma!');
-                        }
-                    })
-                    .catch(error => console.error('Erro:', error));
+                fetch(`/turmas/${id}`, {
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Erro ao deletar turma');
+                    }
+                    carregarTurmas(); // Atualiza a lista de turmas após a exclusão
+                })
+                .catch(error => {
+                    console.error('Erro ao deletar turma:', error);
+                });
             }
         }
-
+    
         // Carregar turmas ao carregar a página
         window.onload = carregarTurmas;
     </script>
+    
 </body>
 </html>
