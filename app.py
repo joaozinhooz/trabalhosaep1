@@ -118,6 +118,11 @@ def delete_atividade(id):
     db.session.commit()
     return jsonify({"message": "Atividade excluída com sucesso!"})
 
+# Rota para exibir a página de atividades
+@app.route('/atividades.html')
+def atividades_html():
+    return send_from_directory('static', 'atividades.html')
+
 # Iniciar o servidor Flask
 if __name__ == '__main__':
     app.run(debug=True)

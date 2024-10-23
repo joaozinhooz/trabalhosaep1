@@ -5,23 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edu Control - Minhas Atividades</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link rel="shortcut icon" href="assets/logoec.png" type="image/x-icon">
 
     <style>
-        /* Configurações gerais */
         body, html {
             height: 100%;
             margin: 0;
-            background-image: url('assets/background.png'); /* URL da imagem de fundo */
-            background-size: cover; /* Garante que a imagem cubra toda a tela */
+            background-image: url('assets/background.png');
+            background-size: cover;
             background-position: center;
-            background-repeat: no-repeat; /* Evita que a imagem se repita */
-            position: relative;
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Estilo da barra de navegação */
-        navbar {
+        .navbar {
             background-color: transparent;
             position: absolute;
             top: 0;
@@ -36,28 +34,51 @@
         }
 
         .navbar-brand {
-            color: #ffffff !important;
-            font-weight: bold;
             margin-top: 20px;
             margin-right: 100px;
-        }
-
-        .navbar-brand {
             position: absolute;
             right: 20px;
+            color: #ffffff !important;
+            font-weight: bold;
         }
 
-        /* Estilo da tabela de atividades */
-        .atividades-container {
-            margin-top: 100px; /* Margem para compensar a altura da navbar */
-            color: #ffffff;
-            padding: 20px;
+        .content-container {
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            flex-direction: column;
+            margin-top: 100px;
+            padding-left: 50px;
         }
 
-        .table {
-            color: #ffffff;
+        h2 {
+            text-align: left;
+            color: white;
+            margin-bottom: 40px;
+            margin-left: 80px;
         }
 
+        .list-group {
+            margin-left: 80px;
+            width: 80%;
+        }
+
+        .list-group-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 10px; /* Espaçamento entre os itens */
+            border-radius: 10px;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .delete-icon {
+            cursor: pointer;
+            color: #ff0000; /* Cor vermelha para o ícone */
+        }
+
+        /* Estilo para a barra de rolagem moderna */
         ::-webkit-scrollbar {
             width: 0px; /* Largura da scrollbar */
         }
@@ -106,101 +127,59 @@
         </div>
     </nav>
 
-    <div class="container atividades-container">
-        <h3>Minhas Atividades</h3>
-        <table class="table table-bordered table-hover">
-            <thead>
-                <tr>
-                    <th>Turma</th>
-                    <th>Nome da Atividade</th>
-                    <th>Descrição</th>
-                    <th>Data de Entrega</th>
-                </tr>
-            </thead>
-            <tbody id="atividadesTableBody">
-                <!-- As atividades serão inseridas aqui dinamicamente -->
-            </tbody>
-        </table>
+    <div class="content-container">
+        <h2>Minhas Atividades</h2>
+        <ul id="atividadesList" class="list-group">
+            <!-- As atividades serão exibidas aqui -->
+        </ul>
     </div>
 
-    
-
     <script>
-        // Função para carregar as atividades do banco de dados e exibi-las na tabela
+        // Função para carregar as atividades do banco de dados e exibi-las
         function carregarAtividades() {
             fetch('/atividades')
-            .then(response => response.json())
-            .then(atividades => {
-                const atividadesTableBody = document.getElementById("atividadesTableBody");
+                .then(response => response.json())
+                .then(atividades => {
+                    const atividadesList = document.getElementById('atividadesList');
+                    atividadesList.innerHTML = ''; // Limpa a lista antes de adicionar
 
-                // Limpar a tabela antes de carregar os dados
-                atividadesTableBody.innerHTML = "";
-
-                // Verificar se há atividades cadastradas
-                if (atividades.length === 0) {
-                    const row = document.createElement("tr");
-                    const cell = document.createElement("td");
-                    cell.colSpan = 4;
-                    cell.textContent = "Nenhuma atividade cadastrada.";
-                    row.appendChild(cell);
-                    atividadesTableBody.appendChild(row);
-                    return;
-                }
-
-                // Preencher a tabela com as atividades
-                atividades.forEach(atividade => {
-                    const row = document.createElement("tr");
-
-                    const turmaCell = document.createElement("td");
-                    turmaCell.textContent = atividade.turma;
-                    row.appendChild(turmaCell);
-
-                    const nomeCell = document.createElement("td");
-                    nomeCell.textContent = atividade.nome;
-                    row.appendChild(nomeCell);
-
-                    const descricaoCell = document.createElement("td");
-                    descricaoCell.textContent = atividade.descricao;
-                    row.appendChild(descricaoCell);
-
-                    const dataEntregaCell = document.createElement("td");
-                    dataEntregaCell.textContent = atividade.dataEntrega;
-                    row.appendChild(dataEntregaCell);
-
-                    atividadesTableBody.appendChild(row);
+                    atividades.forEach((atividade) => {
+                        atividadesList.innerHTML += `
+                            <li class="list-group-item">
+                                <div>
+                                    <strong>${atividade.nome}</strong><br>
+                                    <span><strong>Descrição:</strong> ${atividade.descricao}</span><br>
+                                    <span><strong>Turma:</strong> ${atividade.turma}</span><br>
+                                    <span><strong>Data de Entrega:</strong> ${atividade.dataEntrega}</span>
+                                </div>
+                                <i class="fas fa-trash delete-icon" onclick="deletarAtividade(${atividade.id})"></i> <!-- Ícone de lixeira -->
+                            </li>`;
+                    });
+                })
+                .catch(error => {
+                    console.error('Erro ao carregar atividades:', error);
                 });
-            });
         }
 
-        // Função para adicionar uma nova atividade ao banco de dados
-        function adicionarAtividade(atividade) {
-            fetch('/atividades', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(atividade)
-            })
-            .then(response => response.json())
-            .then(data => {
-                alert(data.message);
-                carregarAtividades();  // Atualiza a lista de atividades
-            });
+        // Função para deletar uma atividade
+        function deletarAtividade(id) {
+            if (confirm('Tem certeza que deseja excluir esta atividade?')) {
+                fetch(`/atividades/${id}`, {
+                    method: 'DELETE'
+                })
+                .then(response => {
+                    if (response.ok) {
+                        console.log('Atividade deletada com sucesso');
+                        carregarAtividades(); // Atualiza a lista de atividades após a exclusão
+                    } else {
+                        console.error('Erro ao deletar a atividade');
+                    }
+                })
+                .catch(error => {
+                    console.error('Erro ao deletar a atividade:', error);
+                });
+            }
         }
-
-        // Manipulador de envio do formulário para adicionar uma nova atividade
-        document.getElementById("atividadeForm").addEventListener("submit", function(event) {
-            event.preventDefault();
-            
-            const novaAtividade = {
-                turma: document.getElementById("turma").value,
-                nome: document.getElementById("nome").value,
-                descricao: document.getElementById("descricao").value,
-                dataEntrega: document.getElementById("dataEntrega").value
-            };
-
-            adicionarAtividade(novaAtividade);
-        });
 
         // Carregar atividades ao carregar a página
         window.onload = carregarAtividades;
