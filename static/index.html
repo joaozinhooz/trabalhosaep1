@@ -160,64 +160,90 @@
       messageDiv.className = `alert alert-${type}`;
       messageDiv.textContent = message;
       messageDiv.style.display = 'block';
-
+  
       // Ocultar mensagem após 3 segundos
       setTimeout(() => {
         messageDiv.style.display = 'none';
       }, 3000);
     }
-
+  
     // Função para mostrar o formulário de cadastro
     function showRegisterForm() {
       document.getElementById('loginForm').style.display = 'none';
       document.getElementById('registerForm').style.display = 'block';
     }
-
+  
     // Função para mostrar o formulário de login
     function showLoginForm() {
       document.getElementById('registerForm').style.display = 'none';
       document.getElementById('loginForm').style.display = 'block';
     }
-
+  
     // Função de login
     function login() {
       const email = document.getElementById('loginEmail').value;
       const password = document.getElementById('loginPassword').value;
-
-      // Recuperar os dados do localStorage
-      const storedEmail = localStorage.getItem('email');
-      const storedPassword = localStorage.getItem('password');
-
-      if (email === storedEmail && password === storedPassword) {
-        showMessage("Login bem-sucedido!", "success");
-        setTimeout(() => {
-          window.location.href = "/static/home.html"; // O ponto indica que é um caminho relativo ao diretório atual
-        }, 1000);
-      } else {
-        showMessage("Usuário ou senha incorretos.", "danger");
-      }
+  
+      // Enviar solicitação de login ao servidor
+      fetch('/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: email, password: password }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.message === "Login bem-sucedido!") {
+            showMessage("Login bem-sucedido!", "success");
+            setTimeout(() => {
+              window.location.href = "/static/home.html"; // Redireciona após login bem-sucedido
+            }, 1000);
+          } else {
+            showMessage(data.message, "danger");
+          }
+        })
+        .catch((error) => {
+          console.error('Erro:', error);
+          showMessage("Erro no servidor. Tente novamente mais tarde.", "danger");
+        });
     }
-
+  
     // Função de cadastro
     function register() {
       const email = document.getElementById('registerEmail').value;
       const password = document.getElementById('registerPassword').value;
       const confirmPassword = document.getElementById('confirmPassword').value;
-
+  
       if (password !== confirmPassword) {
         showMessage('As senhas não coincidem!', "danger");
-      } else {
-        // Salvar os dados no localStorage
-        localStorage.setItem('email', email);
-        localStorage.setItem('password', password);
-
-        showMessage("Cadastro realizado com sucesso!", "success");
-
-        // Redirecionar para a tela de login após 1 segundo
-        setTimeout(showLoginForm, 1000);
+        return;
       }
+  
+      // Enviar solicitação de cadastro ao servidor
+      fetch('/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: email, password: password }),
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.message === "Usuário cadastrado com sucesso!") {
+            showMessage("Cadastro realizado com sucesso!", "success");
+            setTimeout(showLoginForm, 1000); // Redireciona para a tela de login
+          } else {
+            showMessage(data.message, "danger");
+          }
+        })
+        .catch((error) => {
+          console.error('Erro:', error);
+          showMessage("Erro no servidor. Tente novamente mais tarde.", "danger");
+        });
     }
   </script>
+  
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>

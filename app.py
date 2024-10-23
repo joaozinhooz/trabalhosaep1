@@ -25,6 +25,12 @@ class Turma(db.Model):
     professor = db.Column(db.String(120), nullable=False)
     alunos = db.Column(db.Integer, nullable=False)
 
+# Modelo de Usuário
+class Usuario(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(120), unique=True, nullable=False)
+    senha = db.Column(db.String(120), nullable=False)
+
 # Criar o banco de dados dentro do contexto da aplicação
 with app.app_context():
     db.create_all()
@@ -36,7 +42,7 @@ def index():
 
 # Rota para a página de login
 @app.route('/login')
-def login():
+def login_page():
     return send_from_directory('static', 'home.html')
 
 # Rota para o dashboard
@@ -122,6 +128,38 @@ def delete_atividade(id):
 @app.route('/atividades.html')
 def atividades_html():
     return send_from_directory('static', 'atividades.html')
+
+# Rota de cadastro de usuário
+@app.route('/register', methods=['POST'])
+def register():
+    data = request.get_json()
+    email = data['email']
+    senha = data['password']
+
+    # Verifica se o e-mail já está cadastrado
+    usuario_existente = Usuario.query.filter_by(email=email).first()
+    if usuario_existente:
+        return jsonify({"message": "E-mail já cadastrado."}), 400
+
+    # Cria um novo usuário
+    novo_usuario = Usuario(email=email, senha=senha)
+    db.session.add(novo_usuario)
+    db.session.commit()
+    return jsonify({"message": "Usuário cadastrado com sucesso!"}), 201
+
+# Rota de login
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    email = data['email']
+    senha = data['password']
+
+    # Verifica se o usuário existe e a senha está correta
+    usuario = Usuario.query.filter_by(email=email, senha=senha).first()
+    if usuario:
+        return jsonify({"message": "Login bem-sucedido!"}), 200
+    else:
+        return jsonify({"message": "Usuário ou senha incorretos."}), 401
 
 # Iniciar o servidor Flask
 if __name__ == '__main__':
